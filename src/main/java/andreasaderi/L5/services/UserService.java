@@ -4,6 +4,7 @@ import andreasaderi.L5.entities.User;
 import andreasaderi.L5.exceptions.EmailAlreadyInUseException;
 import andreasaderi.L5.exceptions.EmailNotFoundException;
 import andreasaderi.L5.exceptions.NotFoundException;
+import andreasaderi.L5.payloads.SetUserRoleDTO;
 import andreasaderi.L5.payloads.UserDTO;
 import andreasaderi.L5.repositories.UserRepository;
 import org.springframework.data.domain.Page;
@@ -45,5 +46,11 @@ public class UserService {
         if (page < 0) page = 0;
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
+    }
+
+    public User setUserRole(SetUserRoleDTO body, UUID userId) {
+        User user = findById(userId);
+        user.setRole(body.role());
+        return userRepository.save(user);
     }
 }
