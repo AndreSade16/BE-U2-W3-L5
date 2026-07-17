@@ -32,6 +32,7 @@ public class Event {
     private int allowance;
     @ManyToOne
     @JoinColumn(name = "organizator_id", nullable = false)
+    @Setter(AccessLevel.NONE)
     private User organizer;
 
     public Event(String title, String description, LocalDate date, String location, int allowance, User organizer) {

@@ -1,5 +1,5 @@
 package andreasaderi.L5.entities;
 
 public enum Role {
-    USER, ORGANIZATOR, ADMIN
+    USER, ORGANIZER, ADMIN
 }

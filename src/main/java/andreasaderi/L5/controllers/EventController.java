@@ -9,6 +9,7 @@ import andreasaderi.L5.services.EventService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +30,7 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ORGANIZER')")
     public EventSavedDTO save(@RequestBody @Validated EventDTO body, BindingResult validationResult, @AuthenticationPrincipal User user) {
         if (validationResult.hasErrors()) {
             throw new ValidationException(validationResult.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
@@ -36,6 +38,22 @@ public class EventController {
         Event saved = eventService.save(body, user);
 
         return new EventSavedDTO(saved.getEventId());
+    }
+
+    @PutMapping("/me/{eventId}")
+    @PreAuthorize(("hasAnyAuthority('ADMIN', 'ORGANIZER')"))
+    public Event editEvent(@AuthenticationPrincipal User user, @PathVariable UUID eventId, @RequestBody @Validated EventDTO body, BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            throw new ValidationException(validationResult.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
+        }
+        return eventService.editEvent(user, eventId, body);
+    }
+
+    @DeleteMapping("/me/{eventId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ORGANIZER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEvent(@AuthenticationPrincipal User user, @PathVariable UUID eventId) {
+        eventService.deleteById(eventId, user);
     }
 
 
