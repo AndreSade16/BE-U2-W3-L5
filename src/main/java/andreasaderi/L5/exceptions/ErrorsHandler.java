@@ -40,6 +40,12 @@ public class ErrorsHandler {
         return new ErrorsDTO(exception.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler(MaxPeoplePerEventReachedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsDTO handleMaxPeoplePerEventReached(MaxPeoplePerEventReachedException exception) {
+        return new ErrorsDTO(exception.getMessage(), LocalDateTime.now());
+    }
+
     @ExceptionHandler(ReservationAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorsDTO handleReservationAlreadyExists(ReservationAlreadyExistsException exception) {

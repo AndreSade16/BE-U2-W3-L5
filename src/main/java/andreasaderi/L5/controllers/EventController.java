@@ -36,8 +36,8 @@ public class EventController {
         Event saved = eventService.save(body, user);
 
         return new EventSavedDTO(saved.getEventId());
-
     }
+
 
     @GetMapping
     public Page<Event> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {

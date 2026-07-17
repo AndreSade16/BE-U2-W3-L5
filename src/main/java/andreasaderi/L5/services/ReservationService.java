@@ -3,6 +3,7 @@ package andreasaderi.L5.services;
 import andreasaderi.L5.entities.Event;
 import andreasaderi.L5.entities.Reservation;
 import andreasaderi.L5.entities.User;
+import andreasaderi.L5.exceptions.MaxPeoplePerEventReachedException;
 import andreasaderi.L5.exceptions.ReservationAlreadyExistsException;
 import andreasaderi.L5.payloads.ReservationDTO;
 import andreasaderi.L5.repositories.ReservationRepository;
@@ -26,6 +27,8 @@ public class ReservationService {
         if (reservationRepository.existsByEventEventIdAndUserUserId(body.eventId(), user.getUserId()))
             throw new ReservationAlreadyExistsException(body.eventId(), user);
         Event event = eventService.findById(body.eventId());
+        if (reservationRepository.findByEvent(event).size() >= event.getAllowance())
+            throw new MaxPeoplePerEventReachedException("This event is Sold Out");
         return reservationRepository.save(new Reservation(user, event));
     }
 
