@@ -1,15 +1,8 @@
 package andreasaderi.L5.controllers;
 
-import andreasaderi.L5.entities.User;
-import andreasaderi.L5.exceptions.ValidationException;
-import andreasaderi.L5.payloads.UserDTO;
-import andreasaderi.L5.payloads.UserSavedDTO;
 import andreasaderi.L5.services.UserService;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
@@ -21,14 +14,5 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserSavedDTO save(@RequestBody @Validated UserDTO body, BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            throw new ValidationException(validationResult.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
-        }
 
-        User saved = userService.save(body);
-        return new UserSavedDTO(saved.getUserId());
-    }
 }
