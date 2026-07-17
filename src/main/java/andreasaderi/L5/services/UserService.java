@@ -6,6 +6,9 @@ import andreasaderi.L5.exceptions.EmailNotFoundException;
 import andreasaderi.L5.exceptions.NotFoundException;
 import andreasaderi.L5.payloads.UserDTO;
 import andreasaderi.L5.repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +37,13 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
+    }
+
+    public Page<User> findAll(int page, int size) {
+        if (size <= 0) size = 10;
+        if (size > 20) size = 20;
+        if (page < 0) page = 0;
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
     }
 }
