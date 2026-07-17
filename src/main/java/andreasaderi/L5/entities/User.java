@@ -41,12 +41,12 @@ public class User implements UserDetails {
     @Column(nullable = false, name = "profile_pic_url")
     private String profilePicUrl;
 
-    public User(String name, String surname, String email, String password, Role role) {
+    public User(String name, String surname, String email, String password) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = Role.USER;
         this.profilePicUrl = "https://ui-avatars.com/api/?name=" + name + "+" + surname;
     }
 

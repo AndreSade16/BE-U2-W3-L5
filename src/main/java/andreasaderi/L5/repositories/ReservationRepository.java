@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
-    boolean existsByTripTripIdAndEmployeeEmployeeId(UUID tripId, UUID employeeId);
+    boolean existsByEventEventIdAndUserUserId(UUID eventId, UUID userId);
 
-    boolean existsByEmployeeEmployeeIdAndTripDate(UUID employeeId, LocalDate date);
+    boolean existsByUserUserIdAndEventDate(UUID userId, LocalDate date);
 
-    Page<Reservation> findByUserEmployeeId(UUID employeeId, Pageable pageable);
+    Page<Reservation> findByUserUserId(UUID userId, Pageable pageable);
 }
