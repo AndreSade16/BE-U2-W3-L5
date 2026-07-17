@@ -1,6 +1,7 @@
 package andreasaderi.L5.services;
 
 import andreasaderi.L5.entities.Event;
+import andreasaderi.L5.entities.Role;
 import andreasaderi.L5.entities.User;
 import andreasaderi.L5.exceptions.EventAlreadyExistsException;
 import andreasaderi.L5.exceptions.NotFoundException;
@@ -43,24 +44,23 @@ public class EventService {
 
     public Event editEvent(User user, UUID eventId, EventDTO body) {
         Event event = findById(eventId);
-        if (!event.getOrganizer().getUserId().equals(user.getUserId()))
-            throw new UnauthorizedException("The event you're looking for is not among yours");
+        if (event.getOrganizer().getUserId().equals(user.getUserId()) || user.getRole() == Role.ADMIN) {
+            event.setAllowance(body.allowance());
+            event.setDate(body.date());
+            event.setTitle(body.title());
+            event.setLocation(body.location());
+            event.setDescription(body.description());
 
-        event.setAllowance(body.allowance());
-        event.setDate(body.date());
-        event.setTitle(body.title());
-        event.setLocation(body.location());
-        event.setDescription(body.description());
+            return eventRepository.save(event);
+        } else throw new UnauthorizedException("The event you're looking for is not among yours");
 
-        return eventRepository.save(event);
 
     }
 
     public void deleteById(UUID eventId, User user) {
         Event event = findById(eventId);
-        if (!event.getOrganizer().getUserId().equals(user.getUserId()))
-            throw new UnauthorizedException("The event you're looking for is not among yours");
-
-        eventRepository.delete(event);
+        if (event.getOrganizer().getUserId().equals(user.getUserId()) || user.getRole() == Role.ADMIN) {
+            eventRepository.delete(event);
+        } else throw new UnauthorizedException("The event you're looking for is not among yours");
     }
 }
