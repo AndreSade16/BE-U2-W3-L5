@@ -55,4 +55,12 @@ public class EventService {
         return eventRepository.save(event);
 
     }
+
+    public void deleteById(UUID eventId, User user) {
+        Event event = findById(eventId);
+        if (!event.getOrganizer().getUserId().equals(user.getUserId()))
+            throw new UnauthorizedException("The event you're looking for is not among yours");
+
+        eventRepository.delete(event);
+    }
 }

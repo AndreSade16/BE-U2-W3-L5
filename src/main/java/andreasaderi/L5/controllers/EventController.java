@@ -42,8 +42,18 @@ public class EventController {
 
     @PutMapping("/me/{eventId}")
     @PreAuthorize(("hasAnyAuthority('ADMIN', 'ORGANIZER')"))
-    public Event editEvent(@AuthenticationPrincipal User user, @PathVariable UUID eventId, @RequestBody @Validated EventDTO body) {
+    public Event editEvent(@AuthenticationPrincipal User user, @PathVariable UUID eventId, @RequestBody @Validated EventDTO body, BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            throw new ValidationException(validationResult.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
+        }
         return eventService.editEvent(user, eventId, body);
+    }
+
+    @DeleteMapping("/me/{eventId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ORGANIZER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEvent(@AuthenticationPrincipal User user, @PathVariable UUID eventId) {
+        eventService.deleteById(eventId, user);
     }
 
 
