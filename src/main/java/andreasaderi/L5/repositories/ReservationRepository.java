@@ -21,4 +21,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, UUID> 
     Page<Reservation> findByUser(User userId, Pageable pageable);
 
     List<Reservation> findByEvent(Event event);
+
 }

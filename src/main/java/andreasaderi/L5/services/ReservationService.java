@@ -4,13 +4,17 @@ import andreasaderi.L5.entities.Event;
 import andreasaderi.L5.entities.Reservation;
 import andreasaderi.L5.entities.User;
 import andreasaderi.L5.exceptions.MaxPeoplePerEventReachedException;
+import andreasaderi.L5.exceptions.NotFoundException;
 import andreasaderi.L5.exceptions.ReservationAlreadyExistsException;
+import andreasaderi.L5.exceptions.UnauthorizedException;
 import andreasaderi.L5.payloads.ReservationDTO;
 import andreasaderi.L5.repositories.ReservationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class ReservationService {
@@ -32,6 +36,10 @@ public class ReservationService {
         return reservationRepository.save(new Reservation(user, event));
     }
 
+    public Reservation findById(UUID reservationId) {
+        return reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException(reservationId));
+    }
+
     public Page<Reservation> findAll(int page, int size) {
         if (size <= 0) size = 10;
         if (size > 20) size = 20;
@@ -48,4 +56,10 @@ public class ReservationService {
         return reservationRepository.findByUser(user, pageable);
     }
 
+    public void deleteOwnById(User user, UUID reservationId) {
+        Reservation reservation = findById(reservationId);
+        if (!reservation.getUser().getUserId().equals(user.getUserId()))
+            throw new UnauthorizedException("This reservation is not yours to delete");
+        reservationRepository.delete(reservation);
+    }
 }
