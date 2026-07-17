@@ -4,6 +4,7 @@ import andreasaderi.L5.entities.Event;
 import andreasaderi.L5.entities.User;
 import andreasaderi.L5.exceptions.EventAlreadyExistsException;
 import andreasaderi.L5.exceptions.NotFoundException;
+import andreasaderi.L5.exceptions.UnauthorizedException;
 import andreasaderi.L5.payloads.EventDTO;
 import andreasaderi.L5.repositories.EventRepository;
 import org.springframework.data.domain.Page;
@@ -38,5 +39,20 @@ public class EventService {
 
     public Event findById(UUID eventId) {
         return eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId));
+    }
+
+    public Event editEvent(User user, UUID eventId, EventDTO body) {
+        Event event = findById(eventId);
+        if (!event.getOrganizer().getUserId().equals(user.getUserId()))
+            throw new UnauthorizedException("The event you're looking for is not among yours");
+
+        event.setAllowance(body.allowance());
+        event.setDate(body.date());
+        event.setTitle(body.title());
+        event.setLocation(body.location());
+        event.setDescription(body.description());
+
+        return eventRepository.save(event);
+
     }
 }

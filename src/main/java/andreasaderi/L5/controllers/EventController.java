@@ -40,6 +40,12 @@ public class EventController {
         return new EventSavedDTO(saved.getEventId());
     }
 
+    @PutMapping("/me/{eventId}")
+    @PreAuthorize(("hasAnyAuthority('ADMIN', 'ORGANIZER')"))
+    public Event editEvent(@AuthenticationPrincipal User user, @PathVariable UUID eventId, @RequestBody @Validated EventDTO body) {
+        return eventService.editEvent(user, eventId, body);
+    }
+
 
     @GetMapping
     public Page<Event> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
