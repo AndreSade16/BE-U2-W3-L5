@@ -40,6 +40,13 @@ public class ErrorsHandler {
         return new ErrorsDTO(exception.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler(ReservationAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorsDTO handleReservationAlreadyExists(ReservationAlreadyExistsException exception) {
+        return new ErrorsDTO(exception.getMessage(), LocalDateTime.now());
+    }
+
+
     @ExceptionHandler(EventAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorsDTO handleEventAlreadyExists(EventAlreadyExistsException exception) {

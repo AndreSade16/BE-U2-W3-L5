@@ -1,5 +1,6 @@
 package andreasaderi.L5.repositories;
 
+import andreasaderi.L5.entities.Event;
 import andreasaderi.L5.entities.Reservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -16,4 +18,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, UUID> 
     boolean existsByUserUserIdAndEventDate(UUID userId, LocalDate date);
 
     Page<Reservation> findByUserUserId(UUID userId, Pageable pageable);
+
+    List<Reservation> findByEvent(Event event);
 }

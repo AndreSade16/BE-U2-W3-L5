@@ -7,11 +7,14 @@ import andreasaderi.L5.payloads.EventDTO;
 import andreasaderi.L5.payloads.EventSavedDTO;
 import andreasaderi.L5.services.EventService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/events")
@@ -34,5 +37,14 @@ public class EventController {
 
         return new EventSavedDTO(saved.getEventId());
 
+    }
+
+    @GetMapping
+    public Page<Event> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return eventService.findAll(page, size);
+    }
+
+    public Event findById(UUID eventId) {
+        return eventService.findById(eventId);
     }
 }

@@ -22,4 +22,6 @@ public class UserController {
     public Page<User> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return userService.findAll(page, size);
     }
+
+
 }
