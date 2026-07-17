@@ -39,4 +39,9 @@ public class ReservationController {
     public Page<Reservation> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return reservationService.findAll(page, size);
     }
+
+    @GetMapping("/me")
+    public Page<Reservation> findOwnReservations(@AuthenticationPrincipal User user, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return reservationService.findOwnReservations(user, page, size);
+    }
 }

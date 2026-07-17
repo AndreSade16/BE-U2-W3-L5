@@ -39,4 +39,13 @@ public class ReservationService {
         Pageable pageable = PageRequest.of(page, size);
         return reservationRepository.findAll(pageable);
     }
+
+    public Page<Reservation> findOwnReservations(User user, int page, int size) {
+        if (size <= 0) size = 10;
+        if (size > 20) size = 20;
+        if (page < 0) page = 0;
+        Pageable pageable = PageRequest.of(page, size);
+        return reservationRepository.findByUser(user, pageable);
+    }
+
 }
